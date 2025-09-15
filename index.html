@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>باركود توأم - ur.gov.iq</title>
 
-  <!-- مكتبة QRCode -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- مكتبة QRCode المحلية -->
+  <script src="qrcode-simple.js"></script>
 
   <style>
     body {
@@ -50,14 +50,7 @@
     const qrLink = "https://ur.gov.iq/index/verify-auth?cId=148&cUri=https%3A%2F%2Fxdata.ur.gov.iq%2Fuser-auth&serviceName=%20باستخدام%20رقم%20الهاتف";
 
     // توليد QR
-    new QRCode(document.getElementById("qrcode"), {
-      text: qrLink,
-      width: 220,
-      height: 220,
-      colorDark: "#1c5c93", // نفس لون أور
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H
-    });
+    generateQRCode(qrLink, "qrcode", 220);
   </script>
 
 </body>
