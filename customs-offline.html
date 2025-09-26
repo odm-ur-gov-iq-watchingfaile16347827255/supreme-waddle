@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <title>📂 النسخة الأوفلاين - الكمارك العراقية</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="iraq-colors"></div>
+        <h1>📂 النسخة الأوفلاين - الكمارك العراقية</h1>
+        
+        <nav class="nav-links">
+            <ul>
+                <li><a href="index.html">🏠 الصفحة الرئيسية</a></li>
+                <li><a href="products-table.html">📊 جدول المنتجات</a></li>
+                <li><a href="product-search.html">🔎 الحاسبة</a></li>
+                <li><a href="customs-offline.html" class="active">📂 النسخة الأوفلاين</a></li>
+            </ul>
+        </nav>
+
+        <div class="offline-features">
+            <div class="feature-card">
+                <h3>💾 تخزين محلي للبيانات</h3>
+                <p>جميع بيانات المنتجات والرسوم الجمركية متوفرة محلياً دون الحاجة للاتصال بالإنترنت</p>
+                <button class="btn" onclick="saveOfflineData()">💾 حفظ البيانات محلياً</button>
+                <div id="saveStatus" style="margin-top: 10px; font-size: 14px;"></div>
+            </div>
+
+            <div class="feature-card">
+                <h3>📱 تطبيق الجوال</h3>
+                <p>يمكنك إضافة هذا الموقع إلى الشاشة الرئيسية لجهازك المحمول لتعمل كتطبيق</p>
+                <button class="btn" onclick="showInstallInstructions()">📱 إضافة للشاشة الرئيسية</button>
+            </div>
+
+            <div class="feature-card">
+                <h3>🔄 مزامنة البيانات</h3>
+                <p>مزامنة أحدث البيانات عند توفر الاتصال بالإنترنت</p>
+                <button class="btn" onclick="syncData()">🔄 مزامنة الآن</button>
+                <div id="syncStatus" style="margin-top: 10px; font-size: 14px;"></div>
+            </div>
+
+            <div class="feature-card">
+                <h3>📊 إحصائيات الاستخدام</h3>
+                <p>عرض إحصائيات عن الاستعلامات والحسابات المنجزة</p>
+                <button class="btn" onclick="showStatistics()">📊 عرض الإحصائيات</button>
+                <div id="statsDisplay" style="margin-top: 10px; font-size: 14px;"></div>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background-color: #f0f8ff; border-radius: 5px;">
+            <h3 style="color: #2c5aa0; margin-bottom: 15px;">🌟 مميزات النسخة الأوفلاين:</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <ul style="text-align: right; line-height: 1.8;">
+                    <li>العمل بدون إنترنت</li>
+                    <li>سرعة في الوصول للبيانات</li>
+                    <li>توفير في استهلاك الإنترنت</li>
+                    <li>إمكانية العمل في المناطق النائية</li>
+                </ul>
+                <ul style="text-align: right; line-height: 1.8;">
+                    <li>حفظ الحسابات السابقة</li>
+                    <li>تصدير النتائج كملفات</li>
+                    <li>واجهة سهلة الاستخدام</li>
+                    <li>دعم للطباعة المباشرة</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
+            <h3 style="color: #856404; margin-bottom: 15px;">⚠️ تنبيه مهم:</h3>
+            <p style="text-align: right; line-height: 1.8; color: #856404;">
+                هذه النسخة التجريبية من النظام. للحصول على أحدث المعلومات والرسوم الجمركية، 
+                يُنصح بمراجعة الموقع الرسمي للهيئة العامة للكمارك العراقية أو زيارة أقرب مكتب جمركي.
+            </p>
+        </div>
+
+        <div id="calculationHistory" style="margin-top: 30px; display: none;">
+            <h3 style="color: #2c5aa0; margin-bottom: 15px;">📜 تاريخ الحسابات:</h3>
+            <div id="historyList" style="background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+                <!-- سيتم ملء التاريخ هنا بواسطة JavaScript -->
+            </div>
+            <button class="btn" onclick="clearHistory()" style="margin-top: 15px; background-color: #dc3545;">🗑️ مسح التاريخ</button>
+        </div>
+    </div>
+
+    <script>
+        // تحقق من دعم Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // حفظ البيانات محلياً
+        function saveOfflineData() {
+            const productsData = [
+                {code: "01.01.10", name: "خيول للتناسل", rate: 0, min: 0},
+                {code: "02.01.10", name: "لحم بقري طازج", rate: 5, min: 50000},
+                {code: "03.01.11", name: "أسماك زينة", rate: 10, min: 10000},
+                {code: "04.01.10", name: "حليب طازج", rate: 15, min: 20000},
+                {code: "08.01.10", name: "جوز الهند", rate: 20, min: 30000},
+                {code: "09.01.11", name: "قهوة غير محمصة", rate: 30, min: 100000},
+                {code: "10.01.10", name: "قمح قاسٍ", rate: 5, min: 25000},
+                {code: "15.01.00", name: "دهن الخنزير", rate: 25, min: 40000},
+                {code: "17.01.11", name: "سكر القصب خام", rate: 35, min: 80000},
+                {code: "22.01.10", name: "مياه معدنية", rate: 40, min: 15000},
+                // المزيد من البيانات...
+            ];
+
+            try {
+                localStorage.setItem('customsProducts', JSON.stringify(productsData));
+                localStorage.setItem('lastUpdate', new Date().toISOString());
+                
+                document.getElementById('saveStatus').innerHTML = 
+                    '<span style="color: green;">✅ تم حفظ البيانات بنجاح</span>';
+                
+                setTimeout(() => {
+                    document.getElementById('saveStatus').innerHTML = '';
+                }, 3000);
+            } catch (error) {
+                document.getElementById('saveStatus').innerHTML = 
+                    '<span style="color: red;">❌ فشل في حفظ البيانات</span>';
+            }
+        }
+
+        // مزامنة البيانات
+        function syncData() {
+            document.getElementById('syncStatus').innerHTML = 
+                '<span style="color: blue;">🔄 جارٍ المزامنة...</span>';
+
+            // محاكاة عملية المزامنة
+            setTimeout(() => {
+                if (navigator.onLine) {
+                    localStorage.setItem('lastSync', new Date().toISOString());
+                    document.getElementById('syncStatus').innerHTML = 
+                        '<span style="color: green;">✅ تمت المزامنة بنجاح</span>';
+                } else {
+                    document.getElementById('syncStatus').innerHTML = 
+                        '<span style="color: red;">❌ لا يوجد اتصال بالإنترنت</span>';
+                }
+                
+                setTimeout(() => {
+                    document.getElementById('syncStatus').innerHTML = '';
+                }, 3000);
+            }, 2000);
+        }
+
+        // عرض الإحصائيات
+        function showStatistics() {
+            const calculations = JSON.parse(localStorage.getItem('calculationHistory') || '[]');
+            const lastSync = localStorage.getItem('lastSync');
+            
+            let statsHtml = `
+                <div style="text-align: right;">
+                    <p><strong>عدد الحسابات المنجزة:</strong> ${calculations.length}</p>
+                    <p><strong>آخر مزامنة:</strong> ${lastSync ? new Date(lastSync).toLocaleString('ar-IQ') : 'لم يتم'}</p>
+                    <p><strong>حالة الاتصال:</strong> ${navigator.onLine ? '🟢 متصل' : '🔴 غير متصل'}</p>
+                </div>
+            `;
+
+            document.getElementById('statsDisplay').innerHTML = statsHtml;
+
+            // عرض تاريخ الحسابات إذا كان متوفراً
+            if (calculations.length > 0) {
+                showCalculationHistory();
+            }
+        }
+
+        // عرض تاريخ الحسابات
+        function showCalculationHistory() {
+            const calculations = JSON.parse(localStorage.getItem('calculationHistory') || '[]');
+            
+            if (calculations.length === 0) {
+                return;
+            }
+
+            let historyHtml = '<div style="text-align: right;">';
+            calculations.slice(-5).reverse().forEach((calc, index) => {
+                historyHtml += `
+                    <div style="border-bottom: 1px solid #ddd; padding: 10px 0; margin-bottom: 10px;">
+                        <p><strong>التاريخ:</strong> ${new Date(calc.date).toLocaleString('ar-IQ')}</p>
+                        <p><strong>رمز المنتج:</strong> ${calc.productCode}</p>
+                        <p><strong>القيمة CIF:</strong> ${calc.cifValue.toLocaleString()} د.ع</p>
+                        <p><strong>الرسوم المحتسبة:</strong> ${calc.finalDuty.toLocaleString()} د.ع</p>
+                    </div>
+                `;
+            });
+            historyHtml += '</div>';
+
+            document.getElementById('historyList').innerHTML = historyHtml;
+            document.getElementById('calculationHistory').style.display = 'block';
+        }
+
+        // مسح التاريخ
+        function clearHistory() {
+            if (confirm('هل أنت متأكد من مسح تاريخ الحسابات؟')) {
+                localStorage.removeItem('calculationHistory');
+                document.getElementById('calculationHistory').style.display = 'none';
+                document.getElementById('statsDisplay').innerHTML = '';
+                alert('تم مسح التاريخ بنجاح');
+            }
+        }
+
+        // إظهار تعليمات التثبيت
+        function showInstallInstructions() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            let instructions = '';
+
+            if (userAgent.includes('android')) {
+                instructions = `
+                    <h4>للأندرويد:</h4>
+                    <ol style="text-align: right;">
+                        <li>انقر على القائمة الثلاثية النقاط (⋮) في متصفح Chrome</li>
+                        <li>اختر "إضافة إلى الشاشة الرئيسية"</li>
+                        <li>اكتب اسم التطبيق واضغط "إضافة"</li>
+                    </ol>
+                `;
+            } else if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
+                instructions = `
+                    <h4>للآيفون/آيباد:</h4>
+                    <ol style="text-align: right;">
+                        <li>انقر على زر المشاركة (📤) في سفاري</li>
+                        <li>اختر "إضافة إلى الشاشة الرئيسية"</li>
+                        <li>اكتب اسم التطبيق واضغط "إضافة"</li>
+                    </ol>
+                `;
+            } else {
+                instructions = `
+                    <h4>للحاسوب:</h4>
+                    <p style="text-align: right;">
+                        يمكنك إضافة إشارة مرجعية للموقع في متصفحك أو استخدام الموقع مباشرة.
+                    </p>
+                `;
+            }
+
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 1000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 10px; max-width: 500px; margin: 20px;">
+                    <h3 style="color: #2c5aa0; margin-bottom: 20px;">📱 تعليمات التثبيت</h3>
+                    ${instructions}
+                    <button class="btn" onclick="this.parentElement.parentElement.remove();" 
+                            style="margin-top: 20px;">إغلاق</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // حفظ الحسابات في التاريخ (يتم استدعاؤها من صفحة الحاسبة)
+        function saveCalculationToHistory(data) {
+            const history = JSON.parse(localStorage.getItem('calculationHistory') || '[]');
+            history.push({
+                ...data,
+                date: new Date().toISOString()
+            });
+            
+            // الاحتفاظ بآخر 50 حساباً فقط
+            if (history.length > 50) {
+                history.splice(0, history.length - 50);
+            }
+            
+            localStorage.setItem('calculationHistory', JSON.stringify(history));
+        }
+
+        // تحديث حالة الاتصال
+        window.addEventListener('online', function() {
+            console.log('متصل بالإنترنت');
+        });
+
+        window.addEventListener('offline', function() {
+            console.log('غير متصل بالإنترنت');
+        });
+    </script>
+</body>
+</html>

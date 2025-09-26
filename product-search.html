@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <title>🔎 الحاسبة - الكمارك العراقية</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="iraq-colors"></div>
+        <h1>🔎 حاسبة الرسوم الجمركية</h1>
+        
+        <nav class="nav-links">
+            <ul>
+                <li><a href="index.html">🏠 الصفحة الرئيسية</a></li>
+                <li><a href="products-table.html">📊 جدول المنتجات</a></li>
+                <li><a href="product-search.html" class="active">🔎 الحاسبة</a></li>
+                <li><a href="customs-offline.html">📂 النسخة الأوفلاين</a></li>
+            </ul>
+        </nav>
+
+        <div class="calculator-form">
+            <h2>حساب الرسوم الجمركية</h2>
+            <form id="customsCalculator">
+                <div class="form-group">
+                    <label for="productCode">رمز المنتج:</label>
+                    <select id="productCode" name="productCode" onchange="updateProductInfo()" required>
+                        <option value="">اختر المنتج</option>
+                        <option value="01.01.10" data-rate="0" data-min="0">01.01.10 - خيول للتناسل</option>
+                        <option value="02.01.10" data-rate="5" data-min="50000">02.01.10 - لحم بقري طازج</option>
+                        <option value="03.01.11" data-rate="10" data-min="10000">03.01.11 - أسماك زينة</option>
+                        <option value="04.01.10" data-rate="15" data-min="20000">04.01.10 - حليب طازج</option>
+                        <option value="08.01.10" data-rate="20" data-min="30000">08.01.10 - جوز الهند</option>
+                        <option value="09.01.11" data-rate="30" data-min="100000">09.01.11 - قهوة غير محمصة</option>
+                        <option value="10.01.10" data-rate="5" data-min="25000">10.01.10 - قمح قاسٍ</option>
+                        <option value="15.01.00" data-rate="25" data-min="40000">15.01.00 - دهن الخنزير</option>
+                        <option value="17.01.11" data-rate="35" data-min="80000">17.01.11 - سكر القصب خام</option>
+                        <option value="22.01.10" data-rate="40" data-min="15000">22.01.10 - مياه معدنية</option>
+                        <option value="24.01.10" data-rate="50" data-min="200000">24.01.10 - تبغ غير مصنع</option>
+                        <option value="27.01.01" data-rate="10" data-min="30000">27.01.01 - فحم حجري</option>
+                        <option value="39.01.10" data-rate="15" data-min="60000">39.01.10 - بولي إيثيلين</option>
+                        <option value="52.01.00" data-rate="5" data-min="40000">52.01.00 - قطن غير مندوف</option>
+                        <option value="61.01.10" data-rate="30" data-min="150000">61.01.10 - معاطف رجالية</option>
+                        <option value="72.01.10" data-rate="20" data-min="80000">72.01.10 - حديد زهر</option>
+                        <option value="84.01.10" data-rate="0" data-min="0">84.01.10 - مفاعلات نووية</option>
+                        <option value="87.01.10" data-rate="10" data-min="500000">87.01.10 - جرارات زراعية</option>
+                        <option value="90.01.10" data-rate="5" data-min="100000">90.01.10 - ألياف بصرية</option>
+                        <option value="95.01.00" data-rate="25" data-min="50000">95.01.00 - ألعاب أطفال</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="customsRate">نسبة الرسوم الجمركية (%):</label>
+                    <input type="number" id="customsRate" name="customsRate" min="0" max="100" step="0.1" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="minimumDuty">الحد الأدنى للرسوم (دينار عراقي):</label>
+                    <input type="number" id="minimumDuty" name="minimumDuty" min="0" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="cif_value">القيمة CIF (دينار عراقي):</label>
+                    <input type="number" id="cif_value" name="cif_value" min="0" step="1000" placeholder="أدخل القيمة CIF" required>
+                    <small style="display: block; margin-top: 5px; color: #666;">
+                        CIF = تكلفة البضاعة + التأمين + الشحن
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">الكمية:</label>
+                    <input type="number" id="quantity" name="quantity" min="1" step="1" value="1" required>
+                </div>
+
+                <button type="button" class="btn" onclick="calculateCustoms()">احسب الرسوم الجمركية</button>
+            </form>
+        </div>
+
+        <div id="result" class="result" style="display: none;"></div>
+
+        <div style="margin-top: 30px; padding: 20px; background-color: #f0f8ff; border-radius: 5px;">
+            <h3 style="color: #2c5aa0; margin-bottom: 15px;">📋 طريقة الحساب:</h3>
+            <ol style="text-align: right; line-height: 1.8;">
+                <li>الرسوم المحتسبة = (القيمة CIF × نسبة الرسوم ÷ 100) × الكمية</li>
+                <li>مقارنة الرسوم المحتسبة مع الحد الأدنى × الكمية</li>
+                <li>اختيار الأعلى من القيمتين</li>
+                <li>إضافة أي رسوم إضافية حسب طبيعة البضاعة</li>
+            </ol>
+            
+            <h3 style="color: #2c5aa0; margin: 20px 0 15px 0;">💡 نصائح مهمة:</h3>
+            <ul style="text-align: right; line-height: 1.8;">
+                <li>تأكد من إدخال القيمة CIF الصحيحة</li>
+                <li>قد تطبق رسوم إضافية غير مدرجة في هذه الحاسبة</li>
+                <li>استشر مختص جمركي للحالات المعقدة</li>
+                <li>احتفظ بجميع المستندات الجمركية</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function updateProductInfo() {
+            const select = document.getElementById('productCode');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption.value) {
+                const rate = selectedOption.getAttribute('data-rate');
+                const minDuty = selectedOption.getAttribute('data-min');
+                
+                document.getElementById('customsRate').value = rate;
+                document.getElementById('minimumDuty').value = minDuty;
+            } else {
+                document.getElementById('customsRate').value = '';
+                document.getElementById('minimumDuty').value = '';
+            }
+            
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function calculateCustoms() {
+            const productCode = document.getElementById('productCode').value;
+            const customsRate = parseFloat(document.getElementById('customsRate').value);
+            const minimumDuty = parseFloat(document.getElementById('minimumDuty').value);
+            const cifValue = parseFloat(document.getElementById('cif_value').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+
+            if (!productCode || !cifValue || !quantity) {
+                alert('يرجى إكمال جميع الحقول المطلوبة');
+                return;
+            }
+
+            // حساب الرسوم على أساس النسبة المئوية
+            const calculatedDuty = (cifValue * customsRate / 100) * quantity;
+            
+            // حساب الحد الأدنى للرسوم
+            const minimumDutyTotal = minimumDuty * quantity;
+            
+            // اختيار الأعلى
+            const finalDuty = Math.max(calculatedDuty, minimumDutyTotal);
+            
+            // إجمالي المبلغ المستحق (CIF + الرسوم)
+            const totalAmount = cifValue * quantity + finalDuty;
+
+            const resultHtml = `
+                <h3>نتائج حساب الرسوم الجمركية</h3>
+                <div style="text-align: right; margin: 20px 0;">
+                    <p><strong>رمز المنتج:</strong> ${productCode}</p>
+                    <p><strong>القيمة CIF للوحدة:</strong> ${cifValue.toLocaleString()} دينار عراقي</p>
+                    <p><strong>الكمية:</strong> ${quantity} وحدة</p>
+                    <p><strong>إجمالي القيمة CIF:</strong> ${(cifValue * quantity).toLocaleString()} دينار عراقي</p>
+                    <hr style="margin: 15px 0;">
+                    <p><strong>نسبة الرسوم:</strong> ${customsRate}%</p>
+                    <p><strong>الرسوم المحتسبة:</strong> ${calculatedDuty.toLocaleString()} دينار عراقي</p>
+                    <p><strong>الحد الأدنى للرسوم:</strong> ${minimumDutyTotal.toLocaleString()} دينار عراقي</p>
+                    <hr style="margin: 15px 0;">
+                    <p style="font-size: 1.2em; color: #2c5aa0;"><strong>الرسوم الجمركية النهائية:</strong> ${finalDuty.toLocaleString()} دينار عراقي</p>
+                    <p style="font-size: 1.1em; color: #d9534f;"><strong>المبلغ الإجمالي المستحق:</strong> ${totalAmount.toLocaleString()} دينار عراقي</p>
+                </div>
+                <small style="color: #666;">
+                    * هذه الحسبة تقريبية وقد تطبق رسوم إضافية أخرى
+                </small>
+            `;
+
+            document.getElementById('result').innerHTML = resultHtml;
+            document.getElementById('result').style.display = 'block';
+        }
+
+        // إضافة تنسيق الأرقام أثناء الكتابة
+        document.getElementById('cif_value').addEventListener('input', function(e) {
+            // إزالة التنسيق السابق
+            let value = e.target.value.replace(/,/g, '');
+            // إضافة التنسيق الجديد
+            if (value && !isNaN(value)) {
+                e.target.value = parseInt(value).toLocaleString();
+            }
+        });
+    </script>
+</body>
+</html>
